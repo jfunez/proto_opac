@@ -2,6 +2,7 @@
 from flask import render_template, abort
 from app import app
 import controllers
+from pprint import pprint
 
 
 @app.route('/')
@@ -26,13 +27,20 @@ def index():
 
 
 @app.route('/journals')
-def journal_list():
-    journals = controllers.get_journals_by_collection('spa')
+def collection_list_alpha():
+    journals = controllers.get_journals_by_collection_alpha('esp')
     context = {
         'journals': journals['objects'],
         'meta': journals['meta']
     }
-    return render_template("journal/list.html", **context)
+    return render_template("collection/list_alpha.html", **context)
+
+
+@app.route('/journals/theme')
+def collection_list_theme():
+    context = controllers.get_journals_by_collection_theme('esp')
+
+    return render_template("collection/list_theme.html", **context)
 
 
 @app.route('/journals/<journal_id>')

@@ -1,1 +1,11 @@
 {% extends "base.html" %}
+
+{% block content %}
+  {% include "journal/includes/header.html" %}
+  {% include "journal/includes/levelMenu.html" %}
+
+  {% block main_content %}{% endblock %}
+
+  {% include "includes/footer.html" %}
+{% endblock %}
+

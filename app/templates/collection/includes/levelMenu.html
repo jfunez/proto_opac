@@ -12,8 +12,8 @@
     <div class="col-md-4 col-sm-4">
       <h2><span class="glyphBtn numbers"></span> Lista de Periódicos:</h2>
       <div class="btn-group">
-          <a href="/Colecao/alfa.html" class="btn group selected">Alfabética</a>
-          <a href="/Colecao/tema.html" class="btn group">Temática</a>
+          <a href="{{ url_for("collection_list_alpha") }}" class="btn group selected">Alfabética</a>
+          <a href="{{ url_for("collection_list_theme") }}" class="btn group">Temática</a>
           <a href="/Colecao/edit.html" class="btn group">Por instituição</a>
       </div>
     </div>
