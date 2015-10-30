@@ -1,0 +1,10 @@
+{% extends "journal/base.html" %}
+{% block body_class %}portal collection{% endblock %}
+{% block content %}
+  {% include "includes/header.html" %}
+  {% include "includes/levelMenu.html" %}
+
+  <h1>{{ journal.title}}</h1>
+  <h2>journal id: {{ journal.jid}}</h2>
+  <h2>journal current_status: {{ journal.current_status}}</h2>
+{% endblock %}
