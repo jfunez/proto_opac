@@ -33,6 +33,8 @@
         </ul>
 
         <div class="tab-content">
+
+            <!-- first tab -->
             <div class="tab-pane active collectionListStart" data-action="../static/php/colecaoFinder.php" data-method="theme" data-perpage="20" data-labels="números;Último:;Volume;Nº;Suppl.;Homepage;Submissão de manuscritos;Instruções aos autores;Sobre o periódico;Contato;(inativo);(total {totalTheme} temas / {total} periódicos);Título;Ações" id="areasConhecimento">
                 <input type="hidden" name="currentPage" value="1" class="collectionCurrentPage" />
                 <input type="hidden" name="totalPages" value="" class="collectionTotalPages" />
@@ -49,7 +51,7 @@
                             <tr>
                                 <th>
                                     <div class="col-xs-6">
-                                        Título <small class="collectionListTotalInfo">(Total {{ objects|length }} temas / {{ meta.total }} periódicos)</small>
+                                        Título <small class="collectionListTotalInfo">(Total {{ objects_by_area.objects|length }} temas / {{ objects_by_area.meta.total }} periódicos)</small>
                                     </div>
                                     <div class="col-xs-6 right download">
                                         download da lista
@@ -63,7 +65,7 @@
                         <tr>
                             <td>
                                 <ul>
-                                    {% for area, item in objects.iteritems() %}
+                                    {% for area, item in objects_by_area.objects.iteritems() %}
                                         <li>
                                             <h2>{{ area }} ({{ item|length }})</h2>
                                             <ul>
@@ -73,11 +75,9 @@
                                                             <h3>{{ subarea }} ({{ subitem|length }})</h3>
                                                             <ul>
                                                                 {% for journal in subitem %}
-                                                                    <li>
-                                                                        <a href="{{ url_for('journal_detail', journal_id=journal.jid)}}">
-                                                                            {{journal['title']}}
-                                                                        </a>
-                                                                    </li>
+                                                                  <table>
+                                                                    {% include "includes/format_journal_row.html" %}
+                                                                  </table>
                                                                 {% endfor %}
                                                             </ul>
                                                         </li>
@@ -95,9 +95,9 @@
                     <div class="collectionListLoading" style="display: none;"></div>
                 </div>
             </div>
+            <!-- first tab -->
 
-
-
+            <!-- second tab -->
             <div class="tab-pane collectionListStart" data-action="../static/php/colecaoFinder.php?WoS=true" data-method="theme" data-perpage="20" data-labels="números;Último:;Volume;Nº;Suppl.;Homepage;Submissão de manuscritos;Instruções aos autores;Sobre o periódico;Contato;(inativo);(total {totalTheme} temas / {total} periódicos);Título;Ações" id="temasWoS">
                 <input type="hidden" name="currentPage" value="1" class="collectionCurrentPage" />
                 <input type="hidden" name="totalPages" value="" class="collectionTotalPages" />
@@ -114,7 +114,7 @@
                             <tr>
                                 <th>
                                     <div class="col-xs-6">
-                                        Título <small class="collectionListTotalInfo"></small>
+                                        Título <small class="collectionListTotalInfo">(Total {{ objects_by_indexed.objects|length }} temas / {{ objects_by_indexed.meta.total }} periódicos)</small>
                                     </div>
                                     <div class="col-xs-6 right download">
                                         download da lista
@@ -125,11 +125,32 @@
                             </tr>
                         </thead>
                         <tbody>
+                        <tr>
+                            <td>
+                                <ul>
+                                    {% for index, journals in objects_by_indexed.objects.iteritems() %}
+                                        <li>
+                                          <h2>{{ index }} ({{ journals|length }})</h2>
+                                          <ul>
+                                            {% for journal in journals %}
+                                            <table>
+                                                  {% include "includes/format_journal_row.html" %}
+                                            </table>
+                                            {% endfor %}
+                                          </ul>
+                                        </li>
+                                    {% endfor %}
+                                </ul>
+
+                            </td>
+                        </tr>
                         </tbody>
                     </table>
                     <div class="collectionListLoading" style="display: none;"></div>
                 </div>
             </div>
+            <!-- second tab -->
+
         </div>
         <div class="clearfix"></div>
     </div>

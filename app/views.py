@@ -38,9 +38,22 @@ def collection_list_alpha():
 
 @app.route('/journals/theme')
 def collection_list_theme():
-    context = controllers.get_journals_by_collection_theme('esp')
+    objects_by_area = controllers.get_journals_by_collection_theme('esp')
+    objects_by_indexed = controllers.get_journals_by_collection_indexed('esp')
+
+    context = {
+        'objects_by_area': objects_by_area,
+        'objects_by_indexed': objects_by_indexed
+    }
 
     return render_template("collection/list_theme.html", **context)
+
+
+@app.route('/journals/institution')
+def collection_list_institution():
+    context = controllers.get_journals_by_collection_institution('esp')
+
+    return render_template("collection/list_institution.html", **context)
 
 
 @app.route('/journals/<journal_id>')

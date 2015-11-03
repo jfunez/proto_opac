@@ -55,29 +55,7 @@
             </thead>
             <tbody>
               {% for journal in journals %}
-                <tr>
-                  <td class="actions">
-                    <a title="" class="showTooltip" href="{{ url_for('journal_detail', journal_id=journal.jid) }}" data-original-title="Homepage"><span class="glyphBtn home"></span></a>
-                    <a title="" class="showTooltip" href="#" data-original-title="Submissão de manuscritos"><span class="glyphBtn submission"></span></a>
-                    <a title="" class="showTooltip" href="#" data-original-title="Instruções aos autores"><span class="glyphBtn authorInstructions"></span></a>
-                    <a title="" class="showTooltip" href="#" data-original-title="Sobre o periódico"><span class="glyphBtn about"></span></a>
-                    <a title="" class="showTooltip" href="#" data-original-title="Contato"><span class="glyphBtn contact"></span></a>
-                  </td>
-                  <td>
-
-                    <a class="collectionLink {% if journal.current_status != "current" %} disabled {% endif %}" href="{{ url_for('journal_detail', journal_id=journal.jid) }}">
-                      <strong class="journalTitle">{{ journal.title }}</strong>,
-                      <strong class="journalIssues">{{ journal.issues_count }} números</strong>,
-                      Último:
-                      <span class="journalLastVolume"><em>Volume</em> {{journal.latest_issue.volume }}</span>
-                      <span class="journalLastSuppl"><em>Nº{{journal.latest_issue.number }}</em></span>-
-                      <span class="journalLastPubDate">{{journal.latest_issue.year}}</span>
-                      {% if journal.current_status != "current" %}
-                        (inativo)
-                      {% endif %}
-                    </a>
-                  </td>
-                </tr>
+                {% include "includes/format_journal_row.html" %}
               {% endfor %}
             </tbody>
           </table>

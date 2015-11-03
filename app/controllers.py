@@ -5,9 +5,8 @@ from app import app
 import json
 from pprint import pprint
 
-# ES_HOSTS = ['127.0.0.1', ]
 ES_HOSTS = ['127.0.0.1', ]
-COLLECTION = "spa"
+COLLECTION = "esp"
 INDEX = 'iopac3'
 connections.create_connection(hosts=ES_HOSTS)
 
@@ -86,7 +85,7 @@ def get_journals_by_collection_theme(collection_acronym, page_from=0, page_size=
 
     # Tk no manager para sabermos as relações entre as pequenas areas e as
     # grande areas.
-    grandes_areas = {
+    large_areas = {
         'Human Sciences': {
             'Education & Educational Research': [],
             'Public, Environmental & Occupational Health': [],
@@ -111,14 +110,89 @@ def get_journals_by_collection_theme(collection_acronym, page_from=0, page_size=
              'issues_count': issues.hits.total
              }
 
-        for grande_area in grandes_areas.keys():
-            for sub_area in grandes_areas[grande_area].keys():
-                if grande_area in journal.study_areas:
+        for large_area in large_areas.keys():
+            for sub_area in large_areas[large_area].keys():
+                if large_area in journal.study_areas:
                     if sub_area in journal.subject_categories:
-                        grandes_areas[grande_area][sub_area].append(j)
+                        large_areas[large_area][sub_area].append(j)
+
     result = {
         'meta': meta,
-        'objects': grandes_areas
+        'objects': large_areas
+    }
+
+    return result
+
+
+def get_journals_by_collection_indexed(collection_acronym, page_from=0, page_size=1000):
+
+    search = Search(index=INDEX).query(
+             "nested", path="collections", query=Q("match", collections__acronym=COLLECTION))
+
+    search = search.filter("exists", field="index_at")
+
+    search = search[page_from:page_size]
+    search_response = search.execute()
+
+    meta = {
+        'total': search_response.hits.total,
+    }
+
+    index_at = {}
+    for journal in search_response:
+
+        issues = get_issues_by_jid(journal.jid, page_size=1)
+
+        j = {'jid': journal.jid,
+             'title': journal.title,
+             'current_status': journal.current_status,
+             'latest_issue': issues[0],
+             'issues_count': issues.hits.total
+             }
+
+        for index in journal['index_at']:
+            index_at.setdefault(index, []).append(j)
+
+    result = {
+        'meta': meta,
+        'objects': index_at
+    }
+
+    return result
+
+
+def get_journals_by_collection_institution(collection_acronym, page_from=0, page_size=1000):
+
+    search = Search(index=INDEX).query(
+             "nested", path="collections", query=Q("match", collections__acronym=COLLECTION))
+
+    search = search.filter("exists", field="sponsors")
+
+    search = search[page_from:page_size]
+    search_response = search.execute()
+
+    meta = {
+        'total': search_response.hits.total,
+    }
+
+    sponsors = {}
+    for journal in search_response:
+
+        issues = get_issues_by_jid(journal.jid, page_size=1)
+
+        j = {'jid': journal.jid,
+             'title': journal.title,
+             'current_status': journal.current_status,
+             'latest_issue': issues[0],
+             'issues_count': issues.hits.total
+             }
+
+        for sponsor in journal['sponsors']:
+            sponsors.setdefault(sponsor, []).append(j)
+
+    result = {
+        'meta': meta,
+        'objects': sponsors
     }
 
     return result
