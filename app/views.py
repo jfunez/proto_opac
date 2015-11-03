@@ -7,7 +7,7 @@ from pprint import pprint
 
 @app.route('/')
 def index():
-    user = {'nickname': 'Miguel'}  # fake user
+    user = {'nickname': u'Coleçaão Scielo'}  # fake user
     posts = [  # fake array of posts
         {
             'author': {'nickname': 'John'},
@@ -60,11 +60,19 @@ def collection_list_institution():
 def journal_detail(journal_id):
 
     journal = controllers.get_journal_by_jid(journal_id)
+    latest_issues = controllers.get_issues_by_jid(journal_id, page_size=1)
+    if latest_issues:
+        latest_issue = latest_issues[0]
+    else:
+        latest_issue = None
+
+    pprint(latest_issue.bibliographic_legend)
     if not journal:
         abort(404, 'Journal not found')
 
     context = {
         'journal': journal,
+        'latest_issue': latest_issue,
     }
     return render_template("journal/detail.html", **context)
 

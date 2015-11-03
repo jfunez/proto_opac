@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-
+{% block body_class %}journal{% endblock %}
 {% block content %}
   {% include "journal/includes/header.html" %}
   {% include "journal/includes/levelMenu.html" %}
@@ -7,5 +7,7 @@
   {% block main_content %}{% endblock %}
 
   {% include "includes/footer.html" %}
+
+  {% include "journal/includes/alternative_header.html" %}
 {% endblock %}
 
