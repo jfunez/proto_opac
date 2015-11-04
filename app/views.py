@@ -77,18 +77,11 @@ def journal_detail(journal_id):
     return render_template("journal/detail.html", **context)
 
 
-@app.route('/issues')
-def issue_list():
-    context = {}
-    return render_template("issue/list.html", **context)
-
-
 @app.route('/issues/<issue_id>')
-def issue_detail(issue_id):
-    context = {
-        'issue_id': issue_id,
-    }
-    return render_template("issue/detail.html", **context)
+def issue_toc(issue_id):
+    journal = controllers.get_journal_by_jid('561730b2439f4b3fb67ec59106cac13e')
+    context = {'journal': journal}
+    return render_template("issue/toc.html", **context)
 
 
 @app.route('/articles')
