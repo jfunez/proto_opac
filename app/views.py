@@ -103,8 +103,14 @@ def issue_grid(journal_id):
 
 @app.route('/issues/<string:issue_id>')
 def issue_toc(issue_id):
-    journal = controllers.get_journal_by_jid('561730b2439f4b3fb67ec59106cac13e')
-    context = {'journal': journal}
+    issue = controllers.get_issue_by_iid(issue_id)
+    journal = controllers.get_journal_by_jid(issue.journal_jid)
+    articles = controllers.get_articles_by_iid(issue.iid)
+
+    context = {'journal': journal,
+               'issue': issue,
+               'articles': articles}
+
     return render_template("issue/toc.html", **context)
 
 

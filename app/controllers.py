@@ -56,9 +56,21 @@ def get_issues_by_jid(jid, page_from=0, page_size=1000, sort=["-year", "-volume"
         return None
 
 
+def get_issue_by_iid(iid):
+    search = Search(index=INDEX).query("match", iid=iid)
+    search = search.query("match", _type="issue")
+    search_response = search.execute()
+
+    if search_response.success() and search_response.hits.total > 0:
+        issue = search_response[0]
+        return issue
+    else:
+        return None
+
+
 def get_journal_by_jid(jid, page_from=0, page_size=1000):
 
-    search = Search(index=INDEX).query("term", jid=jid)
+    search = Search(index=INDEX).query("match", jid=jid)
     search = search[page_from:page_size]
     search_response = search.execute()
     if search_response.success() and search_response.hits.total > 0:
@@ -66,6 +78,17 @@ def get_journal_by_jid(jid, page_from=0, page_size=1000):
         return journal
     else:
         return None
+
+
+def get_articles_by_iid(iid, page_from=0, page_size=1000):
+
+    search = Search(index=INDEX).query("match", issue_iid=iid)
+    search = search.query("match", _type="article")
+
+    search = search[page_from:page_size]
+    search_response = search.execute()
+
+    return search_response
 
 
 def get_journals_by_collection_theme(collection_acronym, page_from=0, page_size=1000):
