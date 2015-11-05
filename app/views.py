@@ -3,6 +3,7 @@ from flask import render_template, abort
 from app import app
 import controllers
 from pprint import pprint
+from collections import OrderedDict
 
 
 @app.route('/')
@@ -56,7 +57,7 @@ def collection_list_institution():
     return render_template("collection/list_institution.html", **context)
 
 
-@app.route('/journals/<journal_id>')
+@app.route('/journals/<string:journal_id>')
 def journal_detail(journal_id):
 
     journal = controllers.get_journal_by_jid(journal_id)
@@ -66,7 +67,6 @@ def journal_detail(journal_id):
     else:
         latest_issue = None
 
-    pprint(latest_issue.bibliographic_legend)
     if not journal:
         abort(404, 'Journal not found')
 
@@ -77,7 +77,31 @@ def journal_detail(journal_id):
     return render_template("journal/detail.html", **context)
 
 
-@app.route('/issues/<issue_id>')
+@app.route('/journals/<string:journal_id>/issues')
+def issue_grid(journal_id):
+
+    journal = controllers.get_journal_by_jid(journal_id)
+
+    if not journal:
+        abort(404, 'Journal not found')
+
+    issues = controllers.get_issues_by_jid(journal_id)
+
+    result_dict = OrderedDict()
+    for issue in issues:
+        key_year = str(issue.year)
+        key_volume = str(issue.volume)
+        result_dict.setdefault(key_year, OrderedDict())
+        result_dict[key_year].setdefault(key_volume, []).append(issue)
+
+    context = {
+        'journal': journal,
+        'result_dict': result_dict,
+    }
+    return render_template("issue/grid.html", **context)
+
+
+@app.route('/issues/<string:issue_id>')
 def issue_toc(issue_id):
     journal = controllers.get_journal_by_jid('561730b2439f4b3fb67ec59106cac13e')
     context = {'journal': journal}
@@ -90,7 +114,7 @@ def article_list():
     return render_template("article/list.html", **context)
 
 
-@app.route('/articles/<article_id>')
+@app.route('/articles/<string:article_id>')
 def article_detail(article_id):
     context = {
         'article_id': article_id,

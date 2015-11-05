@@ -33,7 +33,7 @@
           <a href="atual.html" class="dropdown-toggle" data-toggle="dropdown"><span class="glyphBtn numbers"></span></a>
           <ul class="dropdown-menu" role="menu">
             <li class="dropdown-header">Números</li>
-            <li><a href="todos.html">• todos</a></li>
+            <li><a href="{{ url_for('issue_grid', journal_id=journal.id) }}">• todos</a></li>
             <li><a href="atual.html">« anterior</a></li>
             <li><a href="atual.html">• atual</a></li>
             <li><a href="atual.html">» próximo</a></li>

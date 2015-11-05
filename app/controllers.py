@@ -47,10 +47,9 @@ def get_issues_by_jid(jid, page_from=0, page_size=1000, sort=["-year", "-volume"
     search = Search(index=INDEX).query(
                     "match",
                     journal_jid=jid).sort(*sort)
-
+    search = search.query("match", _type="issue")
     search = search[page_from:page_size]
     search_response = search.execute()
-
     if search_response.success() and search_response.hits.total > 0:
         return search_response
     else:
