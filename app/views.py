@@ -8,23 +8,10 @@ from collections import OrderedDict
 
 @app.route('/')
 def index():
-    user = {'nickname': u'Coleçaão Scielo'}  # fake user
-    posts = [  # fake array of posts
-        {
-            'author': {'nickname': 'John'},
-            'body': 'Beautiful day in Portland!'
-        },
-        {
-            'author': {'nickname': 'Susan'},
-            'body': 'The Avengers movie was so cool!'
-        }
-    ]
     context = {
-        'title': 'Home',
-        'user': user,
-        'posts': posts,
+        'title': 'Home'
     }
-    return render_template("index.html", **context)
+    return render_template("collection/index.html", **context)
 
 
 @app.route('/journals')
