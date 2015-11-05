@@ -73,17 +73,22 @@
                       <strong class="issueName">{{journal.short_title}} vol.{{ issue.volume }} no.{{ issue.number }} {{ journal.publisher_city }} {{ issue.start_month }}/{{ issue.end_month }} {{ issue.year }}</strong>
                       <ul>
                         {% for section in issue.sections %}
-                          <li><a href="#{{section.subjects[0].name}}">{{ section.subjects[0].name }}</a></li>
+                          <li><a href="#{{ section.subjects[0].name|upper }}">{{ section.subjects[0].name }}</a></li>
                         {% endfor %}
                       </ul>
                   </div>
               </div>
 
-                <div class="issueIndent">
+                {% for group in articles|groupby('section') %}
+
+                  <a name="{{ group.grouper|upper }}"></a>
+                  <h1>{{ group.grouper }}</h1>
+
+                  <div class="issueIndent">
                     <ul class="articles">
-                      {% for article in articles %}
+                      {% for article in group.list %}
                         <li>
-                            <h2>{{ article.aid }}</h2>
+                            <h2>{{ article.title }}</h2>
                             <a href="../iAHx-Colecao/resultado.html">Schmidt, Morgan</a>
                             <ul class="links">
                                 <li>Português: <a href="../Artigo/resumo.html">Resumo</a> | <a href="../Artigo/">Texto</a> | <a href="#" target="_blank">PDF</a> | <a href="#">Press-release</a></li>
@@ -92,6 +97,10 @@
                         </li>
                       {% endfor %}
                     </ul>
+                  </div>
+
+                {% endfor %}
+
           </div>
           <div class="clearfix"></div>
       </div>
