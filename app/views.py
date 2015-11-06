@@ -109,7 +109,31 @@ def article_list():
 
 @app.route('/articles/<string:article_id>')
 def article_detail(article_id):
+    article = controllers.get_article_by_aid(article_id)
+    journal = controllers.get_journal_by_jid(article.journal_jid)
     context = {
-        'article_id': article_id,
+        'article': article,
+        'journal': journal
     }
     return render_template("article/detail.html", **context)
+
+
+@app.route('/articles/html/<string:article_id>')
+def article_html_by_aid(article_id):
+    article = controllers.get_article_by_aid(article_id)
+
+    article_html = article.htmls[0].source
+
+    return article_html
+
+
+@app.route('/abstract/<string:article_id>')
+def abstract_detail(article_id):
+    article = controllers.get_article_by_aid(article_id)
+    journal = controllers.get_journal_by_jid(article.journal_jid)
+    context = {
+        'article': article,
+        'journal': journal
+    }
+    return render_template("article/abstract.html", **context)
+

@@ -6,7 +6,7 @@ import json
 from pprint import pprint
 
 ES_HOSTS = ['127.0.0.1', ]
-COLLECTION = "spa"
+COLLECTION = "esp"
 INDEX = 'iopac3'
 connections.create_connection(hosts=ES_HOSTS)
 
@@ -218,3 +218,15 @@ def get_journals_by_collection_institution(collection_acronym, page_from=0, page
     }
 
     return result
+
+
+def get_article_by_aid(aid):
+    search = Search(index=INDEX).query("match", aid=aid)
+    search = search.query("match", _type="article")
+    search_response = search.execute()
+
+    if search_response.success() and search_response.hits.total > 0:
+        article = search_response[0]
+        return article
+    else:
+        return None

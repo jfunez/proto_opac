@@ -91,8 +91,17 @@
                             <h2>{{ article.title }}</h2>
                             <a href="../iAHx-Colecao/resultado.html">Schmidt, Morgan</a>
                             <ul class="links">
-                                <li>Português: <a href="../Artigo/resumo.html">Resumo</a> | <a href="../Artigo/">Texto</a> | <a href="#" target="_blank">PDF</a> | <a href="#">Press-release</a></li>
-                                <li>English: <a href="../Artigo/resumo.html">Abstract</a></li>
+                                <li>
+                                  Português:
+                                  <a href="{{ url_for('abstract_detail', article_id=article.aid) }}">Resumo</a> |
+                                  <a href="{{ url_for('article_detail', article_id=article.aid) }}">Texto</a> |
+                                  <a href="#" target="_blank">PDF</a> |
+                                  <a href="#">Press-release</a>
+                                </li>
+                                <li>
+                                  English:
+                                  <a href="{{ url_for('abstract_detail', article_id=article.aid) }}">Abstract</a>
+                                </li>
                             </ul>
                         </li>
                       {% endfor %}
