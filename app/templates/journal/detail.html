@@ -62,7 +62,7 @@
               <h3>Sumário</h3>
               <ul>
                 {% for section in latest_issue.sections %}
-                  <li><a href="atual.html#cartao-do-editor">{{ section.subjects[0].name }}</a></li>
+                  <li><a href="{{ url_for('issue_toc', issue_id=latest_issue.iid) }}#{{ section.subjects[0].name|upper }}">{{ section.subjects[0].name }}</a></li>
                 {% endfor %}
               </ul>
             </div>
