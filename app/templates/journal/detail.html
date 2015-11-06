@@ -48,7 +48,7 @@
         {% if latest_issue %}
           <div class="block lastIssue">
             <div class="col-md-6 col-sm-6">
-              <a href="atual.html">
+              <a href="{{ url_for('issue_toc', issue_id=latest_issue.iid) }}">
                 {% if latest_issue.cover_url %}
                   <img src="{{ latest_issue.cover_url }}" alt="Capa do número mais recente" /> <!-- a imagem é opcional -->
                 {% endif %}
