@@ -18,8 +18,7 @@ def index():
 def collection_list_alpha():
     journals = controllers.get_journals_by_collection_alpha('esp')
     context = {
-        'journals': journals['objects'],
-        'meta': journals['meta']
+        'journals': journals,
     }
     return render_template("collection/list_alpha.html", **context)
 
@@ -101,12 +100,6 @@ def issue_toc(issue_id):
     return render_template("issue/toc.html", **context)
 
 
-@app.route('/articles')
-def article_list():
-    context = {}
-    return render_template("article/list.html", **context)
-
-
 @app.route('/articles/<string:article_id>')
 def article_detail(article_id):
     article = controllers.get_article_by_aid(article_id)
@@ -136,4 +129,3 @@ def abstract_detail(article_id):
         'journal': journal
     }
     return render_template("article/abstract.html", **context)
-

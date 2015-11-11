@@ -20,29 +20,13 @@ def get_journals_by_collection_alpha(collection_acronym, page_from=0, page_size=
     search = search[page_from:page_size]
     search_response = search.execute()
 
-    meta = {
-        'total': search_response.hits.total,
-    }
-
-    journals = []
-    for journal in search_response:
-        issues = get_issues_by_jid(journal.jid, page_size=1)
-        journals.append({
-            'jid': journal.jid,
-            'title': journal.title,
-            'current_status': journal.current_status,
-            'latest_issue': issues[0],
-            'issues_count': issues.hits.total
-        })
-
-    result = {
-        'meta': meta,
-        'objects': journals
-    }
-    return result
+    return search_response
 
 
-def get_issues_by_jid(jid, page_from=0, page_size=1000, sort=["-year", "-volume", "-number"]):
+def get_issues_by_jid(jid, page_from=0, page_size=1000, sort=None):
+
+    if not sort:
+        sort = ["-year", "-volume", "-number"]
 
     search = Search(index=INDEX).query(
                     "match",
@@ -121,15 +105,13 @@ def get_journals_by_collection_theme(collection_acronym, page_from=0, page_size=
 
     for journal in search_response:
 
-        issues = get_issues_by_jid(journal.jid, page_size=1)
-
         j = {'jid': journal.jid,
              'title': journal.title,
              'study_areas': journal.study_areas,
              'subject_categories': journal.subject_categories,
              'current_status': journal.current_status,
-             'latest_issue': issues[0],
-             'issues_count': issues.hits.total
+             'last_issue': journal.last_issue,
+             'issue_count': journal.issue_count
              }
 
         for large_area in large_areas.keys():
@@ -163,13 +145,11 @@ def get_journals_by_collection_indexed(collection_acronym, page_from=0, page_siz
     index_at = {}
     for journal in search_response:
 
-        issues = get_issues_by_jid(journal.jid, page_size=1)
-
         j = {'jid': journal.jid,
              'title': journal.title,
              'current_status': journal.current_status,
-             'latest_issue': issues[0],
-             'issues_count': issues.hits.total
+             'last_issue': journal.last_issue,
+             'issue_count': journal.issue_count
              }
 
         for index in journal['index_at']:
@@ -200,13 +180,11 @@ def get_journals_by_collection_institution(collection_acronym, page_from=0, page
     sponsors = {}
     for journal in search_response:
 
-        issues = get_issues_by_jid(journal.jid, page_size=1)
-
         j = {'jid': journal.jid,
              'title': journal.title,
              'current_status': journal.current_status,
-             'latest_issue': issues[0],
-             'issues_count': issues.hits.total
+             'last_issue': journal.last_issue,
+             'issue_count': journal.issue_count
              }
 
         for sponsor in journal['sponsors']:

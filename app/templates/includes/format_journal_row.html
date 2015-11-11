@@ -9,11 +9,11 @@
   <td>
     <a class="collectionLink {% if journal.current_status != "current" %} disabled {% endif %}" href="{{ url_for('journal_detail', journal_id=journal.jid) }}">
     <strong class="journalTitle">{{ journal.title }}</strong>,
-    <strong class="journalIssues">{{ journal.issues_count }} números</strong>,
+    <strong class="journalIssues">{{ journal.issue_count }} números</strong>,
     Último:
-    <span class="journalLastVolume"><em>Volume</em> {{journal.latest_issue.volume }}</span>
-    <span class="journalLastSuppl"><em>Nº {{journal.latest_issue.number }}</em></span> -
-    <span class="journalLastPubDate">{{journal.latest_issue.year}}</span>
+    <span class="journalLastVolume"><em>Volume</em> {{ journal.last_issue.volume }}</span>
+    <span class="journalLastSuppl"><em>Nº {{ journal.last_issue.number }}</em></span> -
+    <span class="journalLastPubDate">{{ journal.last_issue.year }}</span>
     {% if journal.current_status != "current" %}
       (inativo)
     {% endif %}
