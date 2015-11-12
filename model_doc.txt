@@ -1,0 +1,96 @@
+Desnormalizar para garantir apenas um requisição no Elasticsearch por páginas
+
+Modelo atual:
+
+    - Journal
+        * Chave: jid
+
+    - Issue
+        * Chave: iid
+        * Chave para o Journal: journal_jid (issue conhece o journal utilizando o journal_iid)
+
+    - Article
+        * Chave: aid
+        * Chave para o Issue: issue_iid (article conhece o issue utilizando o issue_iid)
+        * Chave para o Journal: journal_jid (article conhece o journal utilizando o journal_jid)
+
+
+
+                                +++++++
+                                +  J  +  Key: jid
+                            ----+  O  +
+                            |   +  R  +
+                            |   +  N  +
+                            |   +  A  +
+                            |   +  L  +
+                            |   +++++++
+                            |      |
+                          j |      |  journal_jid
+                          o |      |
+                          r |   +++++++
+                          n |   +  I  +  Key: iid
+                          a |   +  S  +  Relation Key: journal_jid
+                          l |   +  S  +
+                          _ |   +  U  +
+                          j |   +  E  +
+                          i |   +++++++
+                          d |      |
+                            |      |  issue_iid
+                            |      |
+                            |   +++++++
+                            |   +  A  +  Key: aid
+                            |   +  R  +  Relation Key: issue_iid
+                            |   +  T  +  Relation Key: journal_jid
+                            ----+  I  +
+                                +  C  +
+                                +  L  +
+                                +  E  +
+                                +++++++
+
+
+Protosta para atender ao site garantido que seja relizado apenas uma requisição para o Elasticsearch:
+
+
+    - Analizando as funções de visão do protótipo...temos a seguintes conclusões:
+
+        Para a maioria das páginas as informações do periódico é obrigatório.
+
+        * Lista alfabética (collection_list_alpha) OK
+            N requisição para o ES (get_journals_by_collection_alpha)
+            A função de controle get_journals_by_collection_alpha precisa para cada periódico buscar o último fascículo,
+            portanto é justificável para atender ao requisito de uma requisição por página que o último fascículo seja adicionado à entidade Journal.
+
+        * Lista de periódico por tema (collection_list_theme) OK
+            N requisição para o ES (get_journals_by_collection_theme)
+            A função de controle get_journals_by_collection_theme precisa para cada períodico buscar o último fascículo,
+            portanto é justificável para atender ao requisito de uma requisição por página que o último fascículo seja adicionado à entidade Journal.
+
+        * Lista de periódico por instituição (collection_list_institution) OK
+            N requisição para o ES (get_journals_by_collection_institution)
+            A função de controle get_journals_by_collection_institution precisa para cada períodico buscar o último fascículo,
+            portanto é justificável para atender ao requisito de uma requisição por página que o último fascículo seja adicionado à entidade Journal.
+
+        ----------------------------------------------------------------------------------------------------------------------------------------------------
+
+        * Página do periódico
+            2 requisições para o ES (journal_detail)
+            Dentro da view é necessário retorna o perióico e o último fascículo.
+            Mas uma justificativa para colocarmos o último fascículo na entidade Journal
+
+        * Grade de fascículo
+            2 requisições para o ES (issue_grid)
+            Dentro da view é necessário retornar o periódico e todos os fascículos de um periódico, essa necessidade existe apenas para retornar o histórico da revista na grade de fascículo.
+            Não sei como resolver esse item precisamos pensar em uma solução.
+
+        * Table of Contents (toc)
+            3 requisições para o ES
+            Nessa página é necessário recuperar todas as entidades, é necessário dados do periódico, do fascículo e dos artigos.
+            :-()
+
+        * Página do artigo
+            2 requisições para o ES (article_detail)
+            Nessa página é necessário acesso ao periódico e artigo
+
+        * Resumo do artigo
+            2 requisições para o ES (abstract_detail)
+            Nessa página é necessário acesso ao periódico e artigo
