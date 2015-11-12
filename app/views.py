@@ -47,19 +47,12 @@ def collection_list_institution():
 def journal_detail(journal_id):
 
     journal = controllers.get_journal_by_jid(journal_id)
-    latest_issues = controllers.get_issues_by_jid(journal_id, page_size=1)
-    if latest_issues:
-        latest_issue = latest_issues[0]
-    else:
-        latest_issue = None
 
     if not journal:
         abort(404, 'Journal not found')
 
-    context = {
-        'journal': journal,
-        'latest_issue': latest_issue,
-    }
+    context = {'journal': journal}
+
     return render_template("journal/detail.html", **context)
 
 
@@ -103,10 +96,11 @@ def issue_toc(issue_id):
 @app.route('/articles/<string:article_id>')
 def article_detail(article_id):
     article = controllers.get_article_by_aid(article_id)
-    journal = controllers.get_journal_by_jid(article.journal_jid)
+
     context = {
         'article': article,
-        'journal': journal
+        'journal': article.journal,
+        'issue': article.issue
     }
     return render_template("article/detail.html", **context)
 
@@ -123,9 +117,10 @@ def article_html_by_aid(article_id):
 @app.route('/abstract/<string:article_id>')
 def abstract_detail(article_id):
     article = controllers.get_article_by_aid(article_id)
-    journal = controllers.get_journal_by_jid(article.journal_jid)
+
     context = {
         'article': article,
-        'journal': journal
+        'journal': article.journal,
+        'issue': article.issue
     }
     return render_template("article/abstract.html", **context)
