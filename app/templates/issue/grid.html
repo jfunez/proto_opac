@@ -53,7 +53,7 @@
                       {% elif issue.type == 'supplement' %}
                         <a href="{{ url_for('issue_toc', issue_id=issue.iid) }}" class="btn">suppl.{{issue.suppl_text}}</a>
                       {% else %} {# issue.type == 'regular' #}
-                        <a href="{{ url_for('issue_toc', issue_id=issue.iid) }}" class="btn">suppl.{{issue.number}}</a>
+                        <a href="{{ url_for('issue_toc', issue_id=issue.iid) }}" class="btn">{{issue.number}}</a>
                       {% endif %}
                     {% endfor %}
                   </td>
